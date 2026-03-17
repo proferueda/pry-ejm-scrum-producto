@@ -32,6 +32,7 @@ El sprint en curso se enfoca en el **módulo de pagos**. A continuación se deta
 - **Integración con PSE** — Conexión con la pasarela de pagos PSE para procesar transacciones bancarias en línea, ampliamente utilizada en Colombia.
 - **Botón de Pago** — Interfaz de usuario para iniciar el flujo de pago de forma intuitiva y segura.
 - **Cálculo de IVA** — Módulo de cómputo del Impuesto al Valor Agregado (IVA) a la tasa colombiana estándar del **19%**, con soporte para tasas personalizadas y validación de entradas.
+- **Cálculo de Parafiscales** — Módulo para calcular los aportes patronales obligatorios en Colombia: SENA (2%), ICBF (3%) y Caja de Compensación Familiar (4%), con desglose detallado por concepto.
 - **Proceso de Reembolsos** — Gestión y documentación del flujo de reembolso de transacciones.
 
 ---
@@ -52,10 +53,12 @@ El sprint en curso se enfoca en el **módulo de pagos**. A continuación se deta
 ```
 pry-ejm-scrum-producto/
 ├── src/
-│   ├── iva.js          # Módulo de cálculo de IVA (19% colombiano)
-│   └── iva.test.js     # Pruebas unitarias del módulo IVA
-├── package.json        # Configuración del proyecto y dependencias
-└── README.md           # Documentación del proyecto
+│   ├── iva.js                # Módulo de cálculo de IVA (19% colombiano)
+│   ├── iva.test.js           # Pruebas unitarias del módulo IVA
+│   ├── parafiscales.js       # Módulo de cálculo de parafiscales (SENA, ICBF, Caja)
+│   └── parafiscales.test.js  # Pruebas unitarias del módulo de parafiscales
+├── package.json              # Configuración del proyecto y dependencias
+└── README.md                 # Documentación del proyecto
 ```
 
 ---
@@ -92,6 +95,20 @@ const { calcularIVA, calcularPrecioConIVA, desglosarIVA } = require('./src/iva')
 calcularIVA(100);           // → 19
 calcularPrecioConIVA(100);  // → 119
 desglosarIVA(50.5);         // → { precioBase: 50.5, iva: 9.6, total: 60.1 }  (valores redondeados a 2 decimales)
+```
+
+### Ejemplo de uso del módulo de Parafiscales
+
+```js
+const { calcularSENA, calcularICBF, calcularCajaCompensacion, calcularTotalParafiscales, desglosarParafiscales } = require('./src/parafiscales');
+
+calcularSENA(1000000);              // → 20000   (2% del sueldo)
+calcularICBF(1000000);              // → 30000   (3% del sueldo)
+calcularCajaCompensacion(1000000);  // → 40000   (4% del sueldo)
+calcularTotalParafiscales(1000000); // → 90000   (9% total)
+
+desglosarParafiscales(1300000);
+// → { sueldoBasico: 1300000, sena: 26000, icbf: 39000, cajaCompensacion: 52000, total: 117000 }
 ```
 
 ---
